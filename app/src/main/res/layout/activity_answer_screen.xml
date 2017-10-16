@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/answerscreenandroid">
+
+    <TextView
+        android:id="@+id/callerNameAnswerScreen"
+        android:text="Dad"
+        android:textColor="#D5D7DB"
+        android:textSize="22dp"
+        android:textAlignment="textStart"
+        android:paddingTop="18dp"
+        android:paddingLeft="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Chronometer
+        android:id="@+id/callTime"
+        android:text="00:16"
+        android:textColor="#D5D7DB"
+        android:textSize="20dp"
+        android:textAlignment="textEnd"
+        android:paddingRight="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/contactImageAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="306dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="centerCrop"/>
+
+    <Button
+        android:id="@+id/endCallButton"
+        android:gravity="bottom"
+        android:padding="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

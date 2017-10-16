@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">EscapeCallReleaseCandidateAndroid</string>
+
+
+        <string-array name="TimersArray">
+            <item>Voice off</item>
+            <item>Male</item>
+            <item>Female</item>
+        </string-array>
+
+
+</resources>

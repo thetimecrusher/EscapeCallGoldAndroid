@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/colorPrimaryDark"
+    android:weightSum="1"
+    android:gravity="center">
+
+
+
+    <TextView
+        android:textSize="10pt"
+        android:text="Caller Name:"
+        android:textColor="#D5D7DB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/callerNameEditText"
+        android:backgroundTint="#D5D7DB"
+        android:textColor="#D5D7DB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/settingsList"
+        android:background="#D5D7DB"
+        android:textColor="#D5D7DB"
+        android:layout_width="match_parent"
+        android:layout_height="143dp">
+
+    </ListView>
+    <TextView
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="8dp"
+        android:textSize="10pt"
+        android:text="Add Image:"
+        android:textColor="#D5D7DB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginLeft="16dp">
+
+    <ImageButton
+        android:id="@+id/addImageButton"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/add_image" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <Button
+            android:id="@+id/saveButton"
+            android:text="Save"
+            android:layout_marginLeft="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/loadButton"
+                android:text="Load"
+                android:layout_marginLeft="64dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+    <Button
+        android:id="@+id/startCustomCallButton"
+        android:textColor="@color/colorAccent"
+        android:textSize="18dp"
+        android:text="Start Call"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
