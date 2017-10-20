@@ -135,5 +135,6 @@ public class Recorder extends AppCompatActivity {
             }
             super.onBackPressed();
         }
+        finish();
     }
 }
