@@ -1,10 +1,16 @@
 package com.example.keithfawcett.escapecallgoldandroid;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.keithfawcett.escapecallgoldandroid.database.DataSource;
 
 public class CustomCaller extends AppCompatActivity {
 
@@ -42,7 +50,7 @@ public class CustomCaller extends AppCompatActivity {
 
     String callerName = "";
     int callerTimeInSeconds = 30;
-    Uri callerImage = Uri.parse("android.resource://com.example.keithfawcett.escapecallbeta/" + R.drawable.defaultcallerimage);
+    String callerImage = "";
     String callerRingTone = "";
     String callerTime = "";
     String customVoice = "";
@@ -54,6 +62,24 @@ public class CustomCaller extends AppCompatActivity {
 
     String[] settings = new String[]{"Ringtone", "Set Timer", "Voice"};
 
+    private static final int REQUEST_READ_PHOTO_PERMISSION = 400;
+
+    private boolean permissionAccepted = false;
+    private String [] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_READ_PHOTO_PERMISSION:
+                permissionAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionAccepted ) finish();
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +90,7 @@ public class CustomCaller extends AppCompatActivity {
         mDataSource.open();
 
 
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_READ_PHOTO_PERMISSION);
 
         nameEditText = (EditText) findViewById(R.id.callerNameEditText);
         settingsList = (ListView) findViewById(R.id.settingsList);
@@ -94,7 +121,9 @@ public class CustomCaller extends AppCompatActivity {
                     Toast.makeText(mContext, "Fill in all fields", Toast.LENGTH_SHORT).show();
                 }else {
                     callerName = nameEditText.getText().toString();
-                    Callers myNewCaller = new Callers(null,callerName,callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage.toString());
+                    Callers deleteCaller = new Callers (null,callerName,callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage);
+                    mDataSource.deleteCaller(deleteCaller);
+                    Callers myNewCaller = new Callers(null,callerName,callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage);
                     mDataSource.addCaller(myNewCaller);
                     Intent updateIntent = new Intent(ACTION_UPDATE_LIST);
                     sendBroadcast(updateIntent);
@@ -117,16 +146,21 @@ public class CustomCaller extends AppCompatActivity {
         startCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String callerImageString = callerImage.toString();
-                callerName = nameEditText.getText().toString();
-                Intent intent = new Intent(mContext, Timer.class);
-                intent.putExtra(CallSettings.Extra_Final_Callers_Name, callerName);
-                intent.putExtra(CallSettings.Extra_Set_Timer, callerTimeInSeconds);
-                intent.putExtra(CallSettings.Extra_Image, callerImageString);
-                intent.putExtra(CallSettings.Extra_Ringtone, callerRingTone);
-                intent.putExtra(CallSettings.Extra_Custom_Voice, customVoice);
+                if (nameEditText.getText().toString().equals("")) {
 
-                startActivity(intent);
+                    Toast.makeText(mContext, "Please Enter A Caller Name", Toast.LENGTH_SHORT).show();
+                } else {
+                    String callerImageString = callerImage.toString();
+                    callerName = nameEditText.getText().toString();
+                    Intent intent = new Intent(mContext, Timer.class);
+                    intent.putExtra(CallSettings.Extra_Final_Callers_Name, callerName);
+                    intent.putExtra(CallSettings.Extra_Set_Timer, callerTimeInSeconds);
+                    intent.putExtra(CallSettings.Extra_Image, callerImageString);
+                    intent.putExtra(CallSettings.Extra_Ringtone, callerRingTone);
+                    intent.putExtra(CallSettings.Extra_Custom_Voice, customVoice);
+
+                    startActivity(intent);
+                }
             }
         });
 
@@ -175,15 +209,16 @@ public class CustomCaller extends AppCompatActivity {
                 Callers callerInfo = (Callers) data.getSerializableExtra(Callers_Extras);
                 callerName = callerInfo.getCallerName();
                 callerTimeInSeconds = callerInfo.getCallerTimeCounter();
-                callerImage = Uri.parse(callerInfo.getCallerImage());
+                callerImage = callerInfo.getCallerImage();
                 nameEditText.setText(callerName);
                 customVoice = callerInfo.getCallerVoice();
-                addImageButton.setImageURI(callerImage);
+                addImageButton.setImageURI(Uri.parse(callerImage));
                 Toast.makeText(mContext,callerInfo.getCallerName(),Toast.LENGTH_SHORT).show();
             }
             else if(reqCode == 5){
-                callerImage = data.getData();
-                addImageButton.setImageURI(data.getData());
+                Log.d("Image data", data.getDataString());
+                callerImage = data.getDataString();
+                addImageButton.setImageURI(Uri.parse(callerImage));
             }
         }
     }

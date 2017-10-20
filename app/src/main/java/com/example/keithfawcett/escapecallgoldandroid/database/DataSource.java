@@ -1,4 +1,4 @@
-package com.example.keithfawcett.escapecallgoldandroid;
+package com.example.keithfawcett.escapecallgoldandroid.database;
 
 
 import android.content.ContentValues;
@@ -6,6 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.keithfawcett.escapecallgoldandroid.Callers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ public class DataSource {
     }
 
     public void deleteCaller(Callers callers){
-        mDatabase.delete(CallerTable.TABLE_CALLERS, CallerTable.COLUMN_NAME, new String[]{callers.getCallerName()});
+        mDatabase.delete(CallerTable.TABLE_CALLERS, CallerTable.COLUMN_NAME + "=?", new String[]{callers.getCallerName()});
     }
 
 

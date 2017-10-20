@@ -1,6 +1,7 @@
 package com.example.keithfawcett.escapecallgoldandroid;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.widget.TextView;
 
 public class Timer extends AppCompatActivity {
@@ -17,11 +20,11 @@ public class Timer extends AppCompatActivity {
 
     static String finalCallerName = "Dad";
     String finalCallerImageString;
-    static Uri finalCallerImage;
+    static String finalCallerImage;
     static String finalCallerRingtone = "atria";
     static String finalCustomVoice = "";
 
-    private CountDownTimer countDownTimer;
+    static CountDownTimer countDownTimer;
 
     TextView timerTextView;
 
@@ -45,7 +48,7 @@ public class Timer extends AppCompatActivity {
         finalCustomVoice = getIntent().getStringExtra(CallSettings.Extra_Custom_Voice);
 
 
-        finalCallerImage = Uri.parse(finalCallerImageString);
+        finalCallerImage = finalCallerImageString;
         timerTextView = (TextView) findViewById(R.id.timerTextView);
 
 
@@ -58,7 +61,7 @@ public class Timer extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Intent intent = new Intent(mContext, CallScreen.class);
+                Intent intent = new Intent(mContext, FakeRingerActivity.class);
                 PowerManager.WakeLock screenLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(
                         PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
                 screenLock.acquire();
@@ -69,9 +72,6 @@ public class Timer extends AppCompatActivity {
         };
 
         countDownTimer.start();
-
-
-
 
     }
 
@@ -91,4 +91,12 @@ public class Timer extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        countDownTimer.cancel();
+        finish();
+    }
+
 }

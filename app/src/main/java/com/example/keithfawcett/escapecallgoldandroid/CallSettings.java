@@ -1,11 +1,15 @@
 package com.example.keithfawcett.escapecallgoldandroid;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AbsListView;
@@ -22,13 +26,17 @@ public class CallSettings extends AppCompatActivity {
 
     int selectedPosition = 0;
     String callerName = "";
-    static String voice = "Voice Off";
+    String voice = "";
     Spinner spinner;
 
 
     ArrayAdapter<CharSequence> adapter;
-    String callerImage = "android.resource://com.example.keithfawcett.escapecallreleasecandidateandroid/" + R.drawable.defaultcallerimage;
+    String callerImage = "";
 
+    private static final int REQUEST_READ_CONTACTS_PERMISSION = 300;
+
+    private boolean permissionAccepted = false;
+    private String [] permissions = {Manifest.permission.READ_CONTACTS};
 
     public final static String Extra_Final_Callers_Name = "com.example.keithfawcett.escapecallreleasecandidateandroid.FINAL_CALLERS_NAME";
     public final static String Extra_Set_Timer = "com.example.keithfawcett.escapecallreleasecandidateandroid.SET_TIMER";
@@ -37,6 +45,19 @@ public class CallSettings extends AppCompatActivity {
     public final static String Extra_Custom_Voice = "com.example.keithfawcett.escapecallreleasecandidateandroid.CUSTOM_VOICE";
 
     private final int PICK_CONTACT = 1;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_READ_CONTACTS_PERMISSION:
+                permissionAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionAccepted ) finish();
+
+    }
+
 
 
 
@@ -47,6 +68,9 @@ public class CallSettings extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, PICK_CONTACT);
+
+
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_READ_CONTACTS_PERMISSION);
 
 
         final ListView listView = (ListView) findViewById(R.id.timesList);
@@ -61,7 +85,7 @@ public class CallSettings extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(i == 0){
-                    voice = "Voice Off";
+                    voice = "";
                 }else if(i == 1){
                     voice = "Male";
                 }else{
@@ -107,6 +131,7 @@ public class CallSettings extends AppCompatActivity {
                 intent.putExtra(Extra_Set_Timer, timeInSeconds[selectedPosition]);
                 intent.putExtra(Extra_Ringtone, "titania");
                 intent.putExtra(Extra_Image, callerImage);
+                intent.putExtra(Extra_Custom_Voice, voice);
                 startActivity(intent);
             }
         });
@@ -124,10 +149,14 @@ public class CallSettings extends AppCompatActivity {
                 Cursor c = getContentResolver().query(contactData, null, null, null, null);
 
                 if(c.moveToFirst()){
-                    String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+                    String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    String image = c.getString(c.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                     callerName = name;
+                    callerImage = image;
                     Toast.makeText(this, "You've picked:" + name, Toast.LENGTH_SHORT).show();
                 }
+            }else{
+                finish();
             }
         }
     }

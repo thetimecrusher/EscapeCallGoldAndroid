@@ -65,7 +65,7 @@ public class Recorder extends AppCompatActivity {
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + System.currentTimeMillis() +  "rec.3gp";
 
 
-        Toast.makeText(this, outputFile, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, outputFile, Toast.LENGTH_SHORT).show();
 
 
 

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+
+import com.example.keithfawcett.escapecallgoldandroid.database.DataSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,13 @@ public class LoadContact extends AppCompatActivity implements CallersListFragmen
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
+        return true;
+    }
+
+
 
     @Override
     protected void onPause() {
@@ -56,5 +66,19 @@ public class LoadContact extends AppCompatActivity implements CallersListFragmen
         finish();
 
 
+    }
+
+    @Override
+    public void itemLongClick(int id) {
+        Callers delete = callers.get(id);
+        mDataSource.deleteCaller(delete);
+
+
+        List<Callers> loadArray = mDataSource.getAllItems();
+        callers.clear();
+        for(int i = 0; i < loadArray.size(); i++){
+            callers.add(loadArray.get(i));
+            CallersListFragment.adapter.notifyDataSetChanged();
+        }
     }
 }

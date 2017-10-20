@@ -1,8 +1,12 @@
 <resources>
-    <string name="app_name">EscapeCallReleaseCandidateAndroid</string>
+    <string name="app_name">EscapeCallGoldAndroid</string>
 
 
-        <string-array name="TimersArray">
+    <string name="incoming_call">Incoming Call</string>
+    <string name="unknown">Unknown</string>
+    <string name="delete">delete</string>
+
+    <string-array name="TimersArray">
             <item>Voice off</item>
             <item>Male</item>
             <item>Female</item>

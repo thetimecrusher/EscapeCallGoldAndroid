@@ -1,8 +1,10 @@
-package com.example.keithfawcett.escapecallgoldandroid;
+package com.example.keithfawcett.escapecallgoldandroid.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.keithfawcett.escapecallgoldandroid.database.CallerTable;
 
 
 class DBHelper extends SQLiteOpenHelper {

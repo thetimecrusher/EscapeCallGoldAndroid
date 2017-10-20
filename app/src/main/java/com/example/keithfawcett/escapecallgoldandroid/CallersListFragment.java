@@ -2,12 +2,17 @@ package com.example.keithfawcett.escapecallgoldandroid;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class CallersListFragment extends ListFragment {
@@ -16,6 +21,7 @@ public class CallersListFragment extends ListFragment {
 
     interface CallersListListener{
         void itemClicked(int id);
+        void itemLongClick(int id);
     }
 
     private CallersListListener listener;
@@ -24,6 +30,25 @@ public class CallersListFragment extends ListFragment {
 
     public CallersListFragment(){
 
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
+
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int arg2, long arg3) {
+
+                listener.itemLongClick(arg2);
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(), "On long click listener" + arg2, Toast.LENGTH_LONG).show();
+
+                return true;
+            }
+        });
     }
 
     @Override
@@ -54,6 +79,8 @@ public class CallersListFragment extends ListFragment {
             listener.itemClicked(position);
         }
     }
+
+
 
 
 

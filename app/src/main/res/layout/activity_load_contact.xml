@@ -8,11 +8,11 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context="com.example.keithfawcett.escapecallreleasecandidateandroid.LoadContact">
+    tools:context="com.example.keithfawcett.escapecallgoldandroid.LoadContact">
 
     <fragment
         android:id="@+id/list_fragment"
-        android:name= "com.example.keithfawcett.escapecallreleasecandidateandroid.CallersListFragment"
+        android:name= "com.example.keithfawcett.escapecallgoldandroid.CallersListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>
