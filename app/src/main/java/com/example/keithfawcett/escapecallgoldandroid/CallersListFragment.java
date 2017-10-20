@@ -44,7 +44,7 @@ public class CallersListFragment extends ListFragment {
 
                 listener.itemLongClick(arg2);
                 adapter.notifyDataSetChanged();
-                Toast.makeText(getActivity(), "On long click listener" + arg2, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getActivity(), "On long click listener" + arg2, Toast.LENGTH_LONG).show();
 
                 return true;
             }
