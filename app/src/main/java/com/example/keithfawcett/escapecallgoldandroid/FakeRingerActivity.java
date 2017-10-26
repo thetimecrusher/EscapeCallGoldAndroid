@@ -55,7 +55,6 @@ public class FakeRingerActivity extends AppCompatActivity {
 
     MediaPlayer mPlayer;
 
-
     private Vibrator vibrator;
 
     private PowerManager.WakeLock wakeLock;
@@ -90,6 +89,8 @@ public class FakeRingerActivity extends AppCompatActivity {
 
         TextView callerName = (TextView) findViewById(R.id.callerName);
 
+        TextView callerNumber = (TextView) findViewById(R.id.phoneNumber);
+
         final Animation ringExpandAnimation = AnimationUtils.loadAnimation(this, R.anim.ring_expand);
 
         final Animation ringShrinkAnimation = AnimationUtils.loadAnimation(this, R.anim.ring_shrink);
@@ -123,6 +124,8 @@ public class FakeRingerActivity extends AppCompatActivity {
         callTime = (Chronometer) findViewById(R.id.callTime);
 
         String name = Timer.finalCallerName;
+
+        String number = Timer.finalCallerNumber;
 
         contactImageString = Timer.finalCallerImage;
 
@@ -207,14 +210,35 @@ public class FakeRingerActivity extends AppCompatActivity {
                         if(!Timer.finalCustomVoice.equals("")) {
                             switch (Timer.finalCustomVoice) {
                                 case "Male":
-                                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.male);
+                                    mPlayer = new MediaPlayer();
+                                    try {
+                                        mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+                                        mPlayer.setDataSource(mContext, Uri.parse("android.resource://" + getPackageName() + "/raw/male"));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }try {
+                                    mPlayer.prepare();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                     break;
                                 case "Female":
-                                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.female);
+                                    mPlayer = new MediaPlayer();
+                                    try {
+                                        mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+                                        mPlayer.setDataSource(mContext, Uri.parse("android.resource://" + getPackageName() + "/raw/female"));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }try {
+                                    mPlayer.prepare();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                     break;
                                 default:
                                     mPlayer = new MediaPlayer();
                                     try {
+                                        mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
                                         mPlayer.setDataSource(Timer.finalCustomVoice);
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -226,6 +250,9 @@ public class FakeRingerActivity extends AppCompatActivity {
                                     }
                                     break;
                             }
+
+
+
                             mPlayer.start();
                         }
 
@@ -266,6 +293,7 @@ public class FakeRingerActivity extends AppCompatActivity {
         callStatus.startAnimation(animCallStatusPulse);
 
         callerName.setText(name);
+        callerNumber.setText(number);
 
         switch (Timer.finalCallerRingtone) {
             case "atria":
@@ -323,6 +351,7 @@ public class FakeRingerActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                contactPhoto.setImageBitmap(BitmapFactory.decodeFile(Timer.finalCallerImage));
             }
 
 

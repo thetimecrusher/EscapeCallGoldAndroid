@@ -26,6 +26,7 @@ public class CallSettings extends AppCompatActivity {
 
     int selectedPosition = 0;
     String callerName = "";
+    String callerNumber = "";
     String voice = "";
     Spinner spinner;
 
@@ -39,6 +40,7 @@ public class CallSettings extends AppCompatActivity {
     private String [] permissions = {Manifest.permission.READ_CONTACTS};
 
     public final static String Extra_Final_Callers_Name = "com.example.keithfawcett.escapecallreleasecandidateandroid.FINAL_CALLERS_NAME";
+    public final static String Extra_Callers_Number = "com.example.keithfawcett.escapecallreleasecandidateandroid.CALLERS_NUMBER";
     public final static String Extra_Set_Timer = "com.example.keithfawcett.escapecallreleasecandidateandroid.SET_TIMER";
     public final static String Extra_Image = "com.example.keithfawcett.escapecallreleasecandidateandroid.IMAGE";
     public final static String Extra_Ringtone = "com.example.keithfawcett.escapecallreleasecandidateandroid.RINGTONE";
@@ -128,6 +130,7 @@ public class CallSettings extends AppCompatActivity {
                 listView.getSelectedItem();
                 Intent intent = new Intent(mContext, Timer.class);
                 intent.putExtra(Extra_Final_Callers_Name, callerName);
+                intent.putExtra(Extra_Callers_Number, callerNumber);
                 intent.putExtra(Extra_Set_Timer, timeInSeconds[selectedPosition]);
                 intent.putExtra(Extra_Ringtone, "titania");
                 intent.putExtra(Extra_Image, callerImage);
@@ -148,9 +151,18 @@ public class CallSettings extends AppCompatActivity {
                 Uri contactData = data.getData();
                 Cursor c = getContentResolver().query(contactData, null, null, null, null);
 
+
                 if(c.moveToFirst()){
                     String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     String image = c.getString(c.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
+                    String id = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+
+                    Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
+                    while (phones.moveToNext()) {
+                        callerNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    }
+                    phones.close();
+
                     callerName = name;
                     callerImage = image;
                     Toast.makeText(this, "You've picked:" + name, Toast.LENGTH_SHORT).show();

@@ -10,6 +10,8 @@
 
     <ListView
         android:id="@+id/chosenItemList"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:background="#D5D7DB"
         android:textColor="#D5D7DB"
         android:layout_width="match_parent"

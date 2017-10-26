@@ -19,6 +19,7 @@ public class Timer extends AppCompatActivity {
     Context mContext = this;
 
     static String finalCallerName = "Dad";
+    static String finalCallerNumber = "";
     String finalCallerImageString;
     static String finalCallerImage;
     static String finalCallerRingtone = "atria";
@@ -43,6 +44,7 @@ public class Timer extends AppCompatActivity {
         int timer = getIntent().getIntExtra(CallSettings.Extra_Set_Timer,0);
         countDownTimeLeft = (long) timer;
         finalCallerName = getIntent().getStringExtra(CallSettings.Extra_Final_Callers_Name);
+        finalCallerNumber = getIntent().getStringExtra(CallSettings.Extra_Callers_Number);
         finalCallerImageString = getIntent().getStringExtra(CallSettings.Extra_Image);
         finalCallerRingtone = getIntent().getStringExtra(CallSettings.Extra_Ringtone);
         finalCustomVoice = getIntent().getStringExtra(CallSettings.Extra_Custom_Voice);

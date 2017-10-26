@@ -2,14 +2,23 @@ package com.example.keithfawcett.escapecallgoldandroid;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +30,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.keithfawcett.escapecallgoldandroid.database.DataSource;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CustomCaller extends AppCompatActivity {
 
@@ -42,6 +56,8 @@ public class CustomCaller extends AppCompatActivity {
 
     public static final String Callers_Extras = "com.example.keithfawcett.escapecallreleasecandidate.CALLERS_EXTRAS";
 
+    private final int REQUEST_TAKE_PICTURE = 423;
+
     ListView settingsList;
     ImageButton addImageButton;
     Button saveButton;
@@ -49,6 +65,7 @@ public class CustomCaller extends AppCompatActivity {
     Button startCall;
 
     String callerName = "";
+    String callerNumber = "";
     int callerTimeInSeconds = 30;
     String callerImage = "";
     String callerRingTone = "";
@@ -57,6 +74,7 @@ public class CustomCaller extends AppCompatActivity {
 
 
     EditText nameEditText;
+    EditText numberEditText;
 
     ArrayAdapter<String> arrayAdapter;
 
@@ -93,6 +111,8 @@ public class CustomCaller extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, permissions, REQUEST_READ_PHOTO_PERMISSION);
 
         nameEditText = (EditText) findViewById(R.id.callerNameEditText);
+        numberEditText = (EditText) findViewById(R.id.callerNumberEditText);
+        numberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         settingsList = (ListView) findViewById(R.id.settingsList);
         addImageButton = (ImageButton) findViewById(R.id.addImageButton);
         saveButton = (Button) findViewById(R.id.saveButton);
@@ -104,10 +124,49 @@ public class CustomCaller extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Contact Image"), 5);
+                AlertDialog.Builder picture_choice = new AlertDialog.Builder(CustomCaller.this);
+                picture_choice.setMessage("Would you like to choose a picture or take a picture?")
+                        .setCancelable(false)
+                        .setPositiveButton("Take Picture", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                // Ensure that there's a camera activity to handle the intent
+                                if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                                    // Create the File where the photo should go
+                                    File photoFile = null;
+                                    try {
+                                        photoFile = createImageFile();
+                                    } catch (IOException ex) {
+                                        // Error occurred while creating the File
+                                        Log.d("Saving Problem", "onOptionsItemSelected: ");
+                                    }
+                                    // Continue only if the File was successfully created
+                                    if (photoFile != null) {
+                                        Uri photoURI = FileProvider.getUriForFile(mContext,
+                                                "com.example.android.fileprovider",
+                                                photoFile);
+                                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                        startActivityForResult(cameraIntent, REQUEST_TAKE_PICTURE);
+                                    }
+                                }
+                            }
+                        })
+                        .setNegativeButton("Choose Picture", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent();
+                                intent.setType("image/*");
+                                intent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(Intent.createChooser(intent, "Select Contact Image"), 5);
+                            }
+                        });
+
+            AlertDialog alert = picture_choice.create();
+                alert.show();
+
+
+
             }
         });
 
@@ -117,13 +176,14 @@ public class CustomCaller extends AppCompatActivity {
 
 
 
-                if(nameEditText.getText().toString().equals("")){
+                if(nameEditText.getText().toString().equals("") || numberEditText.getText().toString().equals("")){
                     Toast.makeText(mContext, "Fill in all fields", Toast.LENGTH_SHORT).show();
                 }else {
                     callerName = nameEditText.getText().toString();
-                    Callers deleteCaller = new Callers (null,callerName,callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage);
+                    callerNumber = numberEditText.getText().toString();
+                    Callers deleteCaller = new Callers (null,callerName, callerNumber,callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage);
                     mDataSource.deleteCaller(deleteCaller);
-                    Callers myNewCaller = new Callers(null,callerName,callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage);
+                    Callers myNewCaller = new Callers(null,callerName, callerNumber, callerTimeInSeconds, callerTime, callerRingTone, customVoice, callerImage);
                     mDataSource.addCaller(myNewCaller);
                     Intent updateIntent = new Intent(ACTION_UPDATE_LIST);
                     sendBroadcast(updateIntent);
@@ -146,14 +206,15 @@ public class CustomCaller extends AppCompatActivity {
         startCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (nameEditText.getText().toString().equals("")) {
-
-                    Toast.makeText(mContext, "Please Enter A Caller Name", Toast.LENGTH_SHORT).show();
+                if(nameEditText.getText().toString().equals("") || numberEditText.getText().toString().equals("")){
+                    Toast.makeText(mContext, "Fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
                     String callerImageString = callerImage.toString();
                     callerName = nameEditText.getText().toString();
+                    callerNumber = numberEditText.getText().toString();
                     Intent intent = new Intent(mContext, Timer.class);
                     intent.putExtra(CallSettings.Extra_Final_Callers_Name, callerName);
+                    intent.putExtra(CallSettings.Extra_Callers_Number, callerNumber);
                     intent.putExtra(CallSettings.Extra_Set_Timer, callerTimeInSeconds);
                     intent.putExtra(CallSettings.Extra_Image, callerImageString);
                     intent.putExtra(CallSettings.Extra_Ringtone, callerRingTone);
@@ -208,9 +269,11 @@ public class CustomCaller extends AppCompatActivity {
            else if(reqCode == 3){
                 Callers callerInfo = (Callers) data.getSerializableExtra(Callers_Extras);
                 callerName = callerInfo.getCallerName();
+                callerNumber = callerInfo.getCallerNumber();
                 callerTimeInSeconds = callerInfo.getCallerTimeCounter();
                 callerImage = callerInfo.getCallerImage();
                 nameEditText.setText(callerName);
+                numberEditText.setText(callerNumber);
                 customVoice = callerInfo.getCallerVoice();
                 addImageButton.setImageURI(Uri.parse(callerImage));
                 Toast.makeText(mContext,callerInfo.getCallerName(),Toast.LENGTH_SHORT).show();
@@ -219,7 +282,33 @@ public class CustomCaller extends AppCompatActivity {
                 Log.d("Image data", data.getDataString());
                 callerImage = data.getDataString();
                 addImageButton.setImageURI(Uri.parse(callerImage));
+            }else if(reqCode == REQUEST_TAKE_PICTURE && reqCode != RESULT_CANCELED) {
+                if(callerImage != null) {
+
+                    addImageButton.setImageBitmap(BitmapFactory.decodeFile(callerImage));
+
+                    //  mImageView.setImageBitmap(BitmapFactory.decodeFile(mImageUri.getPath()));
+                } else {
+                    // Bitmap thumb = (Bitmap) data.getParcelableExtra("data");
+                    addImageButton.setImageBitmap((Bitmap)data.getParcelableExtra("data"));
+                }
             }
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        callerImage = image.getAbsolutePath();
+        return image;
     }
 }

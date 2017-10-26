@@ -19,6 +19,7 @@ public class Callers implements Serializable {
 
     private String callerId;
     private String callerName;
+    private String callerNumber;
     private int callerTimeCounter;
     private String callerTimer;
     private String callerRingtone;
@@ -31,7 +32,7 @@ public class Callers implements Serializable {
 
 
 
-    public Callers(String id, String name, int timeCounter, String timer, String ringtone,String voice, String image){
+    public Callers(String id, String name, String number, int timeCounter, String timer, String ringtone,String voice, String image){
 
         if (id == null){
             id = UUID.randomUUID().toString();
@@ -40,6 +41,7 @@ public class Callers implements Serializable {
 
         callerId = id;
         callerName = name;
+        callerNumber = number;
         callerTimeCounter = timeCounter;
         callerTimer = timer;
         callerRingtone = ringtone;
@@ -67,6 +69,14 @@ public class Callers implements Serializable {
 
     public void setCallerName(String callerName) {
         this.callerName = callerName;
+    }
+
+    public String getCallerNumber() {
+        return callerNumber;
+    }
+
+    public void setCallerNumber(String callerNumber) {
+        this.callerNumber = callerNumber;
     }
 
     public int getCallerTimeCounter() {
@@ -112,10 +122,11 @@ public class Callers implements Serializable {
 
 
     public ContentValues toValues(){
-        ContentValues values = new ContentValues(7);
+        ContentValues values = new ContentValues(8);
 
         values.put(CallerTable.COLUMN_ID, callerId);
         values.put(CallerTable.COLUMN_NAME, callerName);
+        values.put(CallerTable.COLUMN_NUMBER, callerNumber);
         values.put(CallerTable.COLUMN_TIMECOUNTER, callerTimeCounter);
         values.put(CallerTable.COLUMN_TIMER, callerTimer);
         values.put(CallerTable.COLUMN_RINGTONE, callerRingtone);

@@ -18,6 +18,8 @@
         android:layout_height="wrap_content" />
     <Spinner
         android:id="@+id/spinner"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#D5D7DB"/>
@@ -26,12 +28,15 @@
     <TextView
         android:textSize="10pt"
         android:text="Set Timer:"
+        android:layout_marginLeft="8dp"
         android:textColor="#D5D7DB"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ListView
         android:id="@+id/timesList"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:background="#D5D7DB"
         android:layout_width="match_parent"
         android:layout_height="366dp"
@@ -42,6 +47,8 @@
     <Button
         android:id="@+id/startCallButton"
         android:textColor="@color/colorAccent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:textSize="18dp"
         android:text="Start Call"
         android:layout_width="match_parent"

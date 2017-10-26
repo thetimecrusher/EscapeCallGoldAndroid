@@ -51,6 +51,7 @@ public class DataSource {
             Callers callers = new Callers();
             callers.setCallerId(cursor.getString(cursor.getColumnIndex(CallerTable.COLUMN_ID)));
             callers.setCallerName(cursor.getString(cursor.getColumnIndex(CallerTable.COLUMN_NAME)));
+            callers.setCallerNumber(cursor.getString(cursor.getColumnIndex(CallerTable.COLUMN_NUMBER)));
             callers.setCallerTimeCounter(cursor.getInt(cursor.getColumnIndex(CallerTable.COLUMN_TIMECOUNTER)));
             callers.setCallerTimer(cursor.getString(cursor.getColumnIndex(CallerTable.COLUMN_TIMER)));
             callers.setCallerRingtone(cursor.getString(cursor.getColumnIndex(CallerTable.COLUMN_RINGTONE)));
