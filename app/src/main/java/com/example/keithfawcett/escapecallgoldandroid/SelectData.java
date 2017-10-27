@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ public class SelectData extends AppCompatActivity {
     MediaPlayer mPlayer;
 
     String ringtone;
+    int ringtonePicker = 0;
 
     String[] chosenSettings = {};
     final String[] ringtones = {"atria", "dione","luna", "sedna","titania"};
@@ -55,11 +57,20 @@ public class SelectData extends AppCompatActivity {
 
         settingsList.setAdapter(arrayAdapter);
 
+        settingsList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+
+        if (settingsPicker == 0) {
+            settingsList.setItemChecked(CustomCaller.RingTonePlacement, true);
+        }else if (settingsPicker == 1) {
+            settingsList.setItemChecked(CustomCaller.timerPlacement, true);
+        }
+
         settingsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent();
                 if (settingsPicker == 0) {
+
                     switch (i) {
                         case 0:
                             stopSound();
@@ -85,10 +96,13 @@ public class SelectData extends AppCompatActivity {
 
                     mPlayer.start();
                     ringtone = ringtones[i];
+                    ringtonePicker = i;
                 } else if (settingsPicker == 1) {
                     chosenSettings = setTimer;
                     intent.putExtra(CustomCaller.Extra_Set_Timer, setTimer[i]);
                     intent.putExtra(CustomCaller.Extra_Set_Timer_Seconds, timeInSeconds[i]);
+                    intent.putExtra(CustomCaller.Extra_Set_Timer_Placement, i);
+
                     setResult(RESULT_OK, intent);
                     finish();
                 }
@@ -101,12 +115,13 @@ public class SelectData extends AppCompatActivity {
         if (settingsPicker == 0) {
             Intent intent = new Intent();
             intent.putExtra(CustomCaller.Extra_Ringtone, ringtone);
+            intent.putExtra(CustomCaller.Extra_Ringtone_Placement, ringtonePicker);
             setResult(RESULT_OK, intent);
             stopSound();
-            finish();
 
             super.onBackPressed();
         }
+        finish();
     }
 
     public void stopSound(){

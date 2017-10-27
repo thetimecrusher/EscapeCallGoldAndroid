@@ -94,11 +94,6 @@ public class Timer extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        countDownTimer.cancel();
-        finish();
-    }
+
 
 }

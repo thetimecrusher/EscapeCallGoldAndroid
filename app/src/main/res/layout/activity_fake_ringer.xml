@@ -41,6 +41,66 @@
             android:textSize="20sp"
             android:layout_below="@+id/callerName"/>
 
+        <LinearLayout
+            android:paddingTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/phoneNumber"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+        <ImageButton
+            android:id="@+id/speakerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/iconBackground"
+            android:src="@drawable/speaker"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:onClick="speakerButtonClicked"/>
+
+        <ImageButton
+            android:id="@+id/micButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/iconBackground"
+            android:src="@drawable/mic"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:onClick="micButtonClicked"/>
+
+        <ImageButton
+            android:id="@+id/dialerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/iconBackground"
+            android:src="@drawable/dialer"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:onClick="dialerButtonClicked"/>
+
+        <ImageButton
+            android:id="@+id/pauseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/iconBackground"
+            android:src="@drawable/pause"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:onClick="pauseButtonClicked"/>
+
+        <ImageButton
+            android:id="@+id/addCallerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/iconBackground"
+            android:src="@drawable/add_caller"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:onClick="addCallerButtonClicked"/>
+
+        </LinearLayout>
+
 
         <Chronometer
             android:id="@+id/callTime"

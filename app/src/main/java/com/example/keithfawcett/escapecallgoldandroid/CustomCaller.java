@@ -48,8 +48,12 @@ public class CustomCaller extends AppCompatActivity {
     public final static String Extra_Set_Timer = "com.example.keithfawcett.escapecallreleasecandidate.SET_TIMER";
 
     public final static String Extra_Set_Timer_Seconds = "com.example.keithfawcett.escapecallreleasecandidate.SET_TIMER_SECONDS";
+    public final static String Extra_Set_Timer_Placement = "com.example.keithfawcett.escapecallreleasecandidate.SET_TIMER_PLACEMENT";
+
 
     public final static String Extra_Ringtone = "com.example.keithfawcett.escapecallreleasecandidate.RINGTONE";
+    public final static String Extra_Ringtone_Placement = "com.example.keithfawcett.escapecallreleasecandidate.RINGTONEPLACEMENT";
+
     public final static String ACTION_UPDATE_LIST = "com.example.keithfawcett.escapecallreleasecandidate.ACTION_UPDATE_LIST";
     public final static String EXTRA_RECORDING = "com.example.keithfawcett.escapecallreleasecandidate.EXTRA_RECORDING";
 
@@ -67,10 +71,13 @@ public class CustomCaller extends AppCompatActivity {
     String callerName = "";
     String callerNumber = "";
     int callerTimeInSeconds = 30;
+    static int timerPlacement = 0;
     String callerImage = "";
-    String callerRingTone = "";
-    String callerTime = "";
+    String callerRingTone = "atria";
+    static int RingTonePlacement = 0;
+    String callerTime = "30 Seconds";
     String customVoice = "";
+    String hasVoice = "no";
 
 
     EditText nameEditText;
@@ -78,7 +85,7 @@ public class CustomCaller extends AppCompatActivity {
 
     ArrayAdapter<String> arrayAdapter;
 
-    String[] settings = new String[]{"Ringtone", "Set Timer", "Voice"};
+    String[] settings = new String[]{"Ringtone - " + callerRingTone, "Set Timer - " + callerTime, "Voice - " + hasVoice};
 
     private static final int REQUEST_READ_PHOTO_PERMISSION = 400;
 
@@ -256,14 +263,42 @@ public class CustomCaller extends AppCompatActivity {
         if(resCode == RESULT_OK) {
             if(reqCode == 0){
                 callerRingTone = data.getStringExtra(Extra_Ringtone);
-                Toast.makeText(mContext, callerRingTone + " Selected", Toast.LENGTH_SHORT).show();
+                RingTonePlacement = data.getIntExtra(Extra_Ringtone_Placement, 0);
+//                Toast.makeText(mContext, callerRingTone + " Selected", Toast.LENGTH_SHORT).show();
+
+                settings = new String[]{"Ringtone - " + callerRingTone, "Set Timer - " + callerTime, "Voice - " + hasVoice};
+                arrayAdapter = new ArrayAdapter<>(
+                        mContext,
+                        android.R.layout.simple_list_item_activated_1,
+                        settings
+                );
+
+                settingsList.setAdapter(arrayAdapter);
             }
             else if (reqCode == 1){
                 callerTime = data.getStringExtra(Extra_Set_Timer);
                 callerTimeInSeconds = data.getIntExtra(Extra_Set_Timer_Seconds, 30);
-                Toast.makeText(mContext, callerTime + " Selected", Toast.LENGTH_SHORT).show();
+                timerPlacement = data.getIntExtra(Extra_Set_Timer_Placement,0);
+//                Toast.makeText(mContext, callerTime + " Selected", Toast.LENGTH_SHORT).show();
+                settings = new String[]{"Ringtone - " + callerRingTone, "Set Timer - " + callerTime, "Voice - " + hasVoice};
+                arrayAdapter = new ArrayAdapter<>(
+                        mContext,
+                        android.R.layout.simple_list_item_activated_1,
+                        settings
+                );
+
+                settingsList.setAdapter(arrayAdapter);
             }else if (reqCode == 2){
                 customVoice = data.getStringExtra(EXTRA_RECORDING);
+                hasVoice = "Yes";
+                settings = new String[]{"Ringtone - " + callerRingTone, "Set Timer - " + callerTime, "Voice - " + hasVoice};
+                arrayAdapter = new ArrayAdapter<>(
+                        mContext,
+                        android.R.layout.simple_list_item_activated_1,
+                        settings
+                );
+
+                settingsList.setAdapter(arrayAdapter);
 //                Toast.makeText(mContext, customVoice + " Selected", Toast.LENGTH_SHORT).show();
             }
            else if(reqCode == 3){
@@ -271,12 +306,28 @@ public class CustomCaller extends AppCompatActivity {
                 callerName = callerInfo.getCallerName();
                 callerNumber = callerInfo.getCallerNumber();
                 callerTimeInSeconds = callerInfo.getCallerTimeCounter();
+                callerTime = callerInfo.getCallerTimer();
                 callerImage = callerInfo.getCallerImage();
                 nameEditText.setText(callerName);
                 numberEditText.setText(callerNumber);
                 customVoice = callerInfo.getCallerVoice();
                 addImageButton.setImageURI(Uri.parse(callerImage));
                 Toast.makeText(mContext,callerInfo.getCallerName(),Toast.LENGTH_SHORT).show();
+
+                if(customVoice.equals("")){
+                    hasVoice = "No";
+                }else{
+                    hasVoice = "Yes";
+                }
+
+                settings = new String[]{"Ringtone - " + callerRingTone, "Set Timer - " + callerTime, "Voice - " + hasVoice};
+                arrayAdapter = new ArrayAdapter<>(
+                        mContext,
+                        android.R.layout.simple_list_item_activated_1,
+                        settings
+                );
+
+                settingsList.setAdapter(arrayAdapter);
             }
             else if(reqCode == 5){
                 Log.d("Image data", data.getDataString());
@@ -311,4 +362,5 @@ public class CustomCaller extends AppCompatActivity {
         callerImage = image.getAbsolutePath();
         return image;
     }
+
 }

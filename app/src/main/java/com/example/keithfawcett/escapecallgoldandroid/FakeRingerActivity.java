@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.MotionEvent;
@@ -72,6 +73,16 @@ public class FakeRingerActivity extends AppCompatActivity {
         }
     };
 
+    ImageButton speakerButton;
+    ImageButton micButton;
+    ImageButton dialerButton;
+    ImageButton pauseButton;
+    ImageButton addCallerButton;
+
+    Boolean speakerButtonPressed = false;
+    Boolean micButtonPressed = false;
+    Boolean pauseButtonPressed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -122,6 +133,12 @@ public class FakeRingerActivity extends AppCompatActivity {
         ring = (ImageView) findViewById(R.id.ring);
 
         callTime = (Chronometer) findViewById(R.id.callTime);
+
+        speakerButton = (ImageButton) findViewById(R.id.speakerButton);
+        micButton = (ImageButton) findViewById(R.id.micButton);
+        dialerButton = (ImageButton) findViewById(R.id.dialerButton);
+        pauseButton = (ImageButton) findViewById(R.id.pauseButton);
+        addCallerButton = (ImageButton) findViewById(R.id.addCallerButton);
 
         String name = Timer.finalCallerName;
 
@@ -294,27 +311,31 @@ public class FakeRingerActivity extends AppCompatActivity {
 
         callerName.setText(name);
         callerNumber.setText(number);
+        if (Timer.finalCallerRingtone == null){
 
-        switch (Timer.finalCallerRingtone) {
-            case "atria":
-                mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.atria);
-                break;
-            case "dione":
-                mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.dione);
-                break;
-            case "luna":
-                mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.luna);
-                break;
-            case "sedna":
-                mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.sedna);
-                break;
-            case "titania":
-                mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.titania);
-                break;
-            default:
-                mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.atria);
+            mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.atria);
+        }else{
+
+            switch (Timer.finalCallerRingtone) {
+                case "atria":
+                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.atria);
+                    break;
+                case "dione":
+                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.dione);
+                    break;
+                case "luna":
+                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.luna);
+                    break;
+                case "sedna":
+                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.sedna);
+                    break;
+                case "titania":
+                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.titania);
+                    break;
+                default:
+                    mPlayer = MediaPlayer.create(FakeRingerActivity.this, R.raw.atria);
+            }
         }
-
 
 
         mPlayer.setLooping(true);
@@ -393,4 +414,46 @@ public class FakeRingerActivity extends AppCompatActivity {
 
     }
 
+    public void speakerButtonClicked(View view) {
+
+        if (speakerButtonPressed){
+            speakerButton.setImageResource(R.drawable.speaker);
+            speakerButtonPressed = false;
+        }else{
+
+            speakerButton.setImageResource(R.drawable.speakerpressed);
+            speakerButtonPressed = true;
+        }
+
+    }
+
+    public void micButtonClicked(View view) {
+        if (micButtonPressed){
+            micButton.setImageResource(R.drawable.mic);
+            micButtonPressed = false;
+        }else{
+
+            micButton.setImageResource(R.drawable.micpressed);
+            micButtonPressed = true;
+        }
+    }
+
+    public void dialerButtonClicked(View view) {
+    }
+
+    public void pauseButtonClicked(View view) {
+        if (pauseButtonPressed){
+            pauseButton.setImageResource(R.drawable.pause);
+            pauseButtonPressed = false;
+        }else{
+
+            pauseButton.setImageResource(R.drawable.pausepressed);
+            pauseButtonPressed = true;
+        }
+    }
+
+    public void addCallerButtonClicked(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivity(intent);
+    }
 }

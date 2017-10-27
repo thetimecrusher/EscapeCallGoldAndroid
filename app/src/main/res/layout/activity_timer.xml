@@ -9,7 +9,7 @@
     <TextView
         android:text="Your call will start in:"
         android:textSize="26dp"
-        android:textColor="#D5D7DB"
+        android:textColor="#444444"
         android:layout_marginTop="30dp"
         android:textAlignment="center"
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/timerTextView"
         android:textSize="26dp"
-        android:textColor="#D5D7DB"
+        android:textColor="#444444"
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
