@@ -89,15 +89,6 @@
             android:scaleType="fitCenter"
             android:onClick="pauseButtonClicked"/>
 
-        <ImageButton
-            android:id="@+id/addCallerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/iconBackground"
-            android:src="@drawable/add_caller"
-            android:layout_weight="1"
-            android:scaleType="fitCenter"
-            android:onClick="addCallerButtonClicked"/>
 
         </LinearLayout>
 

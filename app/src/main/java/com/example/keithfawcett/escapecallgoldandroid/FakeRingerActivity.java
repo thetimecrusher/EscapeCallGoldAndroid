@@ -77,7 +77,6 @@ public class FakeRingerActivity extends AppCompatActivity {
     ImageButton micButton;
     ImageButton dialerButton;
     ImageButton pauseButton;
-    ImageButton addCallerButton;
 
     Boolean speakerButtonPressed = false;
     Boolean micButtonPressed = false;
@@ -138,7 +137,6 @@ public class FakeRingerActivity extends AppCompatActivity {
         micButton = (ImageButton) findViewById(R.id.micButton);
         dialerButton = (ImageButton) findViewById(R.id.dialerButton);
         pauseButton = (ImageButton) findViewById(R.id.pauseButton);
-        addCallerButton = (ImageButton) findViewById(R.id.addCallerButton);
 
         String name = Timer.finalCallerName;
 
@@ -439,6 +437,9 @@ public class FakeRingerActivity extends AppCompatActivity {
     }
 
     public void dialerButtonClicked(View view) {
+
+        Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
+        startActivity(intent);
     }
 
     public void pauseButtonClicked(View view) {
@@ -452,8 +453,4 @@ public class FakeRingerActivity extends AppCompatActivity {
         }
     }
 
-    public void addCallerButtonClicked(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivity(intent);
-    }
 }
